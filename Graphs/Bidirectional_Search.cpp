@@ -30,8 +30,8 @@ void Graph::addEdge(int u, int v)
 	this->adj[v].push_back(u); 
 }; 
 
-void Graph::BFS(list<int> *queue, bool *visited, 
-									int *parent) 
+void Graph::BFS(list<int> *queue, bool *visited,int *parent) 
+					 
 { 
 	int current = queue->front(); 
 	queue->pop_front(); 
