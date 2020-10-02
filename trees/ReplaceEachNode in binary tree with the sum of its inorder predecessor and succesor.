@@ -37,7 +37,7 @@ static Node getNode(int data)
 // of the binary tree in 'arr'
 
 static void storeInorderTraversal( Node root, 
-								Vector<Integer> arr) 
+				Vector<Integer> arr) 
 { 
 	// if root is null 
   
