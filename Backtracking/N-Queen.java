@@ -1,178 +1,105 @@
 /**
- * CREATED BY ROSHAN SINGH
+ * CREATED BY T S T KARTHIK
  *
- * 12:32 AM  08/04/20
+ * 13:20 AM  04/10/20
  */
-import java.io.*;
-import java.util.*;
-class Main{
-    static class Reader // for number only problems
-    {
-        final private int BUFFER_SIZE = 1 << 16;
-        private DataInputStream din;
-        private byte[] buffer;
-        private int bufferPointer, bytesRead;
-        public Reader()
-        {
-            din = new DataInputStream(System.in);
-            buffer = new byte[BUFFER_SIZE];
-            bufferPointer = bytesRead = 0;
-        }
-        public Reader(String file_name) throws IOException
-        {
-            din = new DataInputStream(new FileInputStream(file_name));
-            buffer = new byte[BUFFER_SIZE];
-            bufferPointer = bytesRead = 0;
-        }
-        public String readLine() throws IOException
-        {
-            byte[] buf = new byte[64]; // line length
-            int cnt = 0, c;
-            while ((c = read()) != -1)
-            {
-                if (c == '\n')
-                    break;
-                buf[cnt++] = (byte) c;
-            }
-            return new String(buf, 0, cnt);
-        }
-        public int nextInt() throws IOException
-        {
-            int ret = 0;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do
-            {
-                ret = ret * 10 + c - '0';
-            }  while ((c = read()) >= '0' && c <= '9');
 
-            if (neg)
-                return -ret;
-            return ret;
+/**
+ * N-Queens is the problem to plane N chess queens into a NxN board without
+ * in a way that no queen threats another one.
+ * This implementation uses recursion and backtracking to find the solution.
+ */
+public class NQueens {
+
+    /**
+     * Tries to place N queens into an NxN chess board
+     *
+     * @param n number of queens
+     * @return a solution array, where the indexes are the columns of the board, and the value is the row that
+     * the queen should be placed in that column.
+     */
+    public int[] placeQueens(int n) {
+
+        int[] solution = new int[n];
+
+        placeQueens(0, solution);
+        return solution;
+    }
+
+    /**
+     * Recursive method that tries to place the queen on column 'column', and then passes the current partial solution
+     * to it again, until all columns are solved.
+     * @param column the column that should be solved.
+     * @param solution the partial solution until now.
+     * @return true if it solved the placement problem, false otherwise.
+     */
+    private boolean placeQueens(int column, int[] solution) {
+        // base case, all columns are ok
+        if (column == solution.length) {
+            return true;
         }
-        public long nextLong() throws IOException
-        {
-            long ret = 0;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do {
-                ret = ret * 10 + c - '0';
-            }
-            while ((c = read()) >= '0' && c <= '9');
-            if (neg)
-                return -ret;
-            return ret;
-        }
-        public double nextDouble() throws IOException
-        {
-            double ret = 0, div = 1;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do {
-                ret = ret * 10 + c - '0';
-            }
-            while ((c = read()) >= '0' && c <= '9');
-            if (c == '.')
-            {
-                while ((c = read()) >= '0' && c <= '9')
-                {
-                    ret += (c - '0') / (div *= 10);
+        for (int row = 0; row < solution.length; row++) {
+            solution[column] = row;
+            if (noThreats(solution, column)) {
+                if (placeQueens(column+1, solution)) {
+                    return true;
                 }
             }
-            if (neg)
-                return -ret;
-            return ret;
         }
-        private void fillBuffer() throws IOException
-        {
-            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
-            if (bytesRead == -1)
-                buffer[0] = -1;
-        }
-        private byte read() throws IOException
-        {
-            if (bufferPointer == bytesRead)
-                fillBuffer();
-            return buffer[bufferPointer++];
-        }
-        public void close() throws IOException
-        {
-            if (din == null)
-                return;
-            din.close();
-        }
+        solution[column] = -1;
+        return false;
     }
 
-    static void n_queen(int[] arr,int level,int n,LinkedList<LinkedList<Integer>> result){
-        if(level == n){
-//            System.out.println(Arrays.toString);
-            if(arr[level-1] != 0){
-                LinkedList<Integer> ll = new LinkedList<>();
-                for (int i = 0; i < n; i++) {
-                    ll.add((int)(Math.log(arr[i])/Math.log(2) +1 ));
-                }
-                result.add(ll);
-            }else{
-                return;
+    /**
+     * This methods check the queens placement for column 'column'
+     * @param solution current partial solution
+     * @param column column index that should be verified against all previous columns
+     * @return true if there are no threats to 'column' queen, false otherwise.
+     */
+    private boolean noThreats(int[] solution, int column) {
+        for (int i = 0; i < column; i++) {
+            if (solution[i] == solution[column]) {
+                return false;
             }
-            return;
-        }
-        int mask = (1<<n)-1;
-        for(int i = 0;i<level;i++){
-            mask &= ~arr[i];
-            mask &= ~(arr[i]>>(level-i));
-            mask &= ~((arr[i]<<(level-i))&((1<<n)-1));
-        }
-//        System.out.println(Integer.toBinaryString(mask)+" "+level);
-//        System.out.println(Integer.toBinaryString(arr[level]));
-
-        for (int i = 0; i < n; i++) {
-            if(((mask>>i)&1) == 1){
-                arr[level] = (1<<i);
-//                System.out.println(Integer.toBinaryString(arr[level])+" "+level);
-                n_queen(arr,level+1,n,result);
-                arr[level] = 0;
+            int diff = column - i;
+            if (solution[i] + diff == solution[column]) {
+                return false;
+            }
+            if (solution[i] - diff == solution[column]) {
+                return false;
             }
         }
+        return true;
     }
-    public static void main(String[] args) throws IOException {
-        Reader s = new Reader();
-//        Reader s = new Reader("INPUT");
-        OutputStream outputStream = System.out;
-//        OutputStream outputStream = new FileOutputStream("OUTPUT");
-        PrintWriter o = new PrintWriter(outputStream);
-        // start
-        int t = s.nextInt();
-        while (t-->0){
-            int n = s.nextInt();
-            LinkedList<LinkedList<Integer>> result = new LinkedList<>();
-            int[] a = new int[n];
-            n_queen(a,0,n,result);
-            if(result.size() == 0){
-                o.println("-1");
-                continue;
-            }
-            for (LinkedList<Integer> i : result){
-                o.print("[");
-                for (Integer j : i) o.print(j+" ");
-                o.print("] ");
-            }
-            o.println("");
-        }
-        // end
-        o.close();
 
+    /**
+     * Prints a solution to System.out with ascii drawing
+     * @param solution
+     */
+    public static void printSolution(int[] solution) {
+         for (int i = 0; i < solution.length; i++) {
+             System.out.print(" _");
+         }
+         System.out.println();
+         for (int i = 0; i < solution.length; i++) {
+             for (int j = 0; j < solution.length; j++) {
+                 System.out.print("|");
+                 if (i == solution[j]) {
+                     System.out.print("@");
+                 } else {
+                     System.out.print("_");
+                 }
+             }
+             System.out.println("|");
+         }
     }
+
+    public static void main(String[] args) {
+        NQueens nQueens = new NQueens();
+        printSolution(nQueens.placeQueens(9));
+    }
+
 }
+        
+
+        
