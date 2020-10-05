@@ -1,158 +1,102 @@
 /**
- * CREATED BY ROSHAN SINGH
+ * CREATED BYKARTHIK FROM NARSHIMA BOOK FOR LOGIC
  *
- * 2:30 AM  27/08/20
+ * 3:43 AM  5/10/20
  */
-import java.io.*;
+*/
 import java.util.*;
-class Main{
-    static class Reader // for number only problems
-    {
-        final private int BUFFER_SIZE = 1 << 16;
-        private DataInputStream din;
-        private byte[] buffer;
-        private int bufferPointer, bytesRead;
-        public Reader()
-        {
-            din = new DataInputStream(System.in);
-            buffer = new byte[BUFFER_SIZE];
-            bufferPointer = bytesRead = 0;
-        }
-        public Reader(String file_name) throws IOException
-        {
-            din = new DataInputStream(new FileInputStream(file_name));
-            buffer = new byte[BUFFER_SIZE];
-            bufferPointer = bytesRead = 0;
-        }
-        public String readLine() throws IOException
-        {
-            byte[] buf = new byte[64]; // line length
-            int cnt = 0, c;
-            while ((c = read()) != -1)
-            {
-                if (c == '\n')
-                    break;
-                buf[cnt++] = (byte) c;
+public class TwoSum{
+    //This is not returning minimum index1;
+    public static ArrayList<Integer> twoSumSolution(final List<Integer> a, int b) {
+        
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        result.add(0);
+        result.add(0);
+        for(int i = 0; i < a.size(); i++){
+            if(map.containsKey(a.get(i))){
+                int index = map.get(a.get(i));
+                result.set(0, index + 1);
+                result.set(1, i + 1);
+                break;
             }
-            return new String(buf, 0, cnt);
-        }
-        public int nextInt() throws IOException
-        {
-            int ret = 0;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do
-            {
-                ret = ret * 10 + c - '0';
-            }  while ((c = read()) >= '0' && c <= '9');
-
-            if (neg)
-                return -ret;
-            return ret;
-        }
-        public long nextLong() throws IOException
-        {
-            long ret = 0;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do {
-                ret = ret * 10 + c - '0';
+            else{
+                map.put(b - a.get(i), i);
             }
-            while ((c = read()) >= '0' && c <= '9');
-            if (neg)
-                return -ret;
-            return ret;
         }
-        public double nextDouble() throws IOException
-        {
-            double ret = 0, div = 1;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do {
-                ret = ret * 10 + c - '0';
-            }
-            while ((c = read()) >= '0' && c <= '9');
-            if (c == '.')
-            {
-                while ((c = read()) >= '0' && c <= '9')
-                {
-                    ret += (c - '0') / (div *= 10);
-                }
-            }
-            if (neg)
-                return -ret;
-            return ret;
-        }
-        private void fillBuffer() throws IOException
-        {
-            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
-            if (bytesRead == -1)
-                buffer[0] = -1;
-        }
-        private byte read() throws IOException
-        {
-            if (bufferPointer == bytesRead)
-                fillBuffer();
-            return buffer[bufferPointer++];
-        }
-        public void close() throws IOException
-        {
-            if (din == null)
-                return;
-            din.close();
-        }
+        
+        
+        
+//         System.out.println("Printing");
+//        for(int i : map.values())
+//            System.out.print(i + " ");
+//        
+//        System.out.println();
+        return result;
     }
-    public static void main(String[] args) throws IOException {
-        Reader s = new Reader();
-//        Reader s = new Reader("INPUT");
-        OutputStream outputStream = System.out;
-//        OutputStream outputStream = new FileOutputStream("OUTPUT");
-        PrintWriter o = new PrintWriter(outputStream);
-        // start
-        int t = s.nextInt();
-        while (t-->0){
-            int n = s.nextInt();
-            int k = s.nextInt();
-            int[] a = new int[n];
-
-            for (int i = 0; i < n; i++) {
-                a[i] = s.nextInt();
-            }
-
-            Map<Integer,Integer> map = new HashMap<>();
-            for (int i : a){
-                map.putIfAbsent(i,0);
-                map.put(i,map.get(i)+1);
-            }
-            int count = 0;
-            for (int i : a){
-                if(map.containsKey(k - i)){
-                    if(k - i == i){
-                        count+=(map.get(i)*(map.get(i)-1)/2);
-                        map.put(i, 0);
-                    }else {
-                        count += map.get(i) * map.get(k - i);
-                        map.put(i, 0);
-                        map.put(k - i, 0);
-                    }
-                }
-            }
-            o.println(count);
+   static class Node implements Comparable<Node> {
+        
+        int left;
+        int right;
+        
+        public Node(int left, int right) {
+            this.left = left;
+            this.right  = right;
         }
-        // end
-        o.close();
-
+        
+        public int compareTo(Node o) {
+            if (this.right < o.right)
+                return -1;
+            if (this.right > o.right)
+                return 1;
+                
+            return Integer.compare(this.left, o.left);
+        }
+        
     }
+    
+ public ArrayList<Integer> twoSum(final List<Integer> A, int B) {
+     
+     int sum = B;
+     int diff;
+     HashMap<Integer, Integer> hashMap = new HashMap<Integer, Integer>();
+     int size = A.size();
+     int num;
+     int index;
+     ArrayList<Integer> res = new ArrayList<Integer>();
+        ArrayList<Node> node = new ArrayList<>();
+     
+     for (int i = size - 1; i >= 0; i--) {
+         num = A.get(i);
+         diff = sum - num;
+         
+         if (hashMap.containsKey(diff)) {
+             index = hashMap.get(diff);
+             node.add(new Node(i + 1, index + 1));
+         }
+         
+         hashMap.put(num, i);
+         
+     }
+     
+     if (node.size() > 0) {
+         Collections.sort(node);
+            res.add(node.get(0).left);
+            res.add(node.get(0).right);
+     }
+     
+     return res;
+     
+ }
+    public static void main(String[] args){
+        ArrayList<Integer> a = new ArrayList<Integer>();
+        a.add(2);
+        a.add(7);
+        a.add(11);
+        a.add(15);
+        ArrayList<Integer> result = twoSumSolution(a, 9);
+        for(int i : result)
+            System.out.print(i + " ");
+    }
+}
 }
