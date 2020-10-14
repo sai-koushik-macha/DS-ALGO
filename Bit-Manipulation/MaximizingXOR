@@ -1,0 +1,24 @@
+"""
+Given two integers,l and r, find the maximal value of  a xor b, where  a and b  satisfy the following condition:
+l<=a<=b<=r
+
+example:
+l=11
+r=12
+ans=7
+
+the maximizingXor function It must return an integer representing the maximum value calculated.
+maximizingXor has the following parameter(s):
+
+l: an integer, the lower bound, inclusive
+r: an integer, the upper bound, inclusive
+
+"""
+def maximizingXor(l, r):
+    m=0
+    for i in range(l,r+1):
+        for j in range(i,r+1):
+            xor=i^j
+            m=max(m,xor)
+    return m
+
