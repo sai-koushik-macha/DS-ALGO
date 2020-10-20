@@ -1,0 +1,15 @@
+class Solution {
+  public:
+    int bitwiseComplement(int N) {
+      int a = N;
+      int i = 0;
+      if (a == 0)
+        return 1;
+      while (a) {
+        N = N ^ (1 << i);
+        a = a >> 1;
+        i++;
+      }
+      return N;
+    }
+};
