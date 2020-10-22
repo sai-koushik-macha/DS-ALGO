@@ -1,48 +1,83 @@
-#include <bits/stdc++.h>
+#include <iostream>
 
-using namespace std;
-
-void binarySearch(int arr[] , int x , int size)
+/* Binary Search */
+int binarySearch(int *array, int n, int target)
 {
-  int left =0;
-  int right = size-1;
-  int temp = -1;
-  int mid;
-  while(left<=right)
-  {
-     mid = (left+right)/2;
-    if(arr[mid]==x)
+    int low = 0;
+    int high = n - 1;
+
+    while (low <= high)
     {
-      temp=0;
-      cout<<"Found";
-      break;
+        int middle = (low + high) / 2;
+        if (array[middle] == target)
+            return middle;
+        else if (array[middle] < target)
+            low = middle + 1;
+        else
+            high = middle - 1;
     }
-    else if(arr[mid]>x)
+    return -1;
+}
+
+/* Binary Search finding the first occurence of target */
+int binarySearchFirst(int *array, int n, int target)
+{
+    int low = 0;
+    int high = n - 1;
+    int first = -1;
+
+    while (low <= high)
     {
-      right=mid-1;
+        int middle = (low + high) / 2;
+        if (array[middle] == target)
+        {
+            first = middle;
+            high = middle - 1;
+        }
+        else if (array[middle] < target)
+            low = middle + 1;
+        else
+            high = middle - 1;
     }
-    else
+    return first;
+}
+
+/* Binary Search finding the last occurence of target */
+int binarySearchLast(int *array, int n, int target)
+{
+    int low = 0;
+    int high = n - 1;
+    int last = -1;
+
+    while (low <= high)
     {
-      left = mid + 1;
+        int middle = (low + high) / 2;
+        if (array[middle] == target)
+        {
+            last = middle;
+            low = middle + 1;
+        }
+        else if (array[middle] < target)
+            low = middle + 1;
+        else
+            high = middle - 1;
     }
-    
-  }
-  if(temp==-1)
-  cout<<"Not found";
+    return last;
 }
 
 int main()
 {
-      int n;
-      cin>>n;
-      int arr[n];
-      for(int i=0 ; i<n; i++)
-      {
-        cin>>arr[i];
-      }
-      int f;
-      cout<<"Enter the number to be found";
-      cin>>f;
-      binarySearch(arr,f,n);
-      return 0;
+    /* Sorted array containing duplicate values */
+    int array[] = {1, 5, 12, 48, 49, 49, 49, 50, 50, 65, 89};
+    int n = sizeof(array)/sizeof(array[0]);
+
+    /* Regular Binary Search */
+    std::cout << "Value found at Index: " << binarySearch(array, n, 65) << std::endl;
+
+    /* Binary Search finding first occurence of duplicate values */
+    std::cout << "Value found at first Index: " << binarySearchFirst(array, n, 49) << std::endl;
+
+    /* Binary Search finding last occurence of duplicate values */
+    std::cout << "Value found at last Index: " << binarySearchLast(array, n, 49) << std::endl;
+    return 0;
 }
