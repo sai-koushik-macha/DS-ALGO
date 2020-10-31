@@ -1,147 +1,39 @@
 /**
- * CREATED BY ROSHAN SINGH
+ * CREATED BY KARTHIK
  *
- * 11:55 PM  07/04/20
+ * 10:25 PAM 22/10/20
  */
-import java.io.*;
-import java.util.*;
-class Main{
-    static class Reader // for number only problems
-    {
-        final private int BUFFER_SIZE = 1 << 16;
-        private DataInputStream din;
-        private byte[] buffer;
-        private int bufferPointer, bytesRead;
-        public Reader()
-        {
-            din = new DataInputStream(System.in);
-            buffer = new byte[BUFFER_SIZE];
-            bufferPointer = bytesRead = 0;
-        }
-        public Reader(String file_name) throws IOException
-        {
-            din = new DataInputStream(new FileInputStream(file_name));
-            buffer = new byte[BUFFER_SIZE];
-            bufferPointer = bytesRead = 0;
-        }
-        public String readLine() throws IOException
-        {
-            byte[] buf = new byte[64]; // line length
-            int cnt = 0, c;
-            while ((c = read()) != -1)
-            {
-                if (c == '\n')
-                    break;
-                buf[cnt++] = (byte) c;
-            }
-            return new String(buf, 0, cnt);
-        }
-        public int nextInt() throws IOException
-        {
-            int ret = 0;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do
-            {
-                ret = ret * 10 + c - '0';
-            }  while ((c = read()) >= '0' && c <= '9');
+static final int MIN = Integer.MIN_VALUE;
+static final int MAX = Integer.MAX_VALUE;
 
-            if (neg)
-                return -ret;
-            return ret;
-        }
-        public long nextLong() throws IOException
-        {
-            long ret = 0;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do {
-                ret = ret * 10 + c - '0';
-            }
-            while ((c = read()) >= '0' && c <= '9');
-            if (neg)
-                return -ret;
-            return ret;
-        }
-        public double nextDouble() throws IOException
-        {
-            double ret = 0, div = 1;
-            byte c = read();
-            while (c <= ' ')
-                c = read();
-            boolean neg = (c == '-');
-            if (neg)
-                c = read();
-            do {
-                ret = ret * 10 + c - '0';
-            }
-            while ((c = read()) >= '0' && c <= '9');
-            if (c == '.')
-            {
-                while ((c = read()) >= '0' && c <= '9')
-                {
-                    ret += (c - '0') / (div *= 10);
-                }
-            }
-            if (neg)
-                return -ret;
-            return ret;
-        }
-        private void fillBuffer() throws IOException
-        {
-            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
-            if (bytesRead == -1)
-                buffer[0] = -1;
-        }
-        private byte read() throws IOException
-        {
-            if (bufferPointer == bytesRead)
-                fillBuffer();
-            return buffer[bufferPointer++];
-        }
-        public void close() throws IOException
-        {
-            if (din == null)
-                return;
-            din.close();
-        }
-    }
-    public static void main(String[] args) throws IOException {
-//        Reader s = new Reader();
-        Reader s = new Reader("INPUT");
-//        OutputStream outputStream = System.out;
-        OutputStream outputStream = new FileOutputStream("OUTPUT");
-        PrintWriter o = new PrintWriter(outputStream);
-        // start
-        int t = s.nextInt();
-        while (t-->0){
-            int n = s.nextInt();
-            int m = s.nextInt();
-            int k = s.nextInt();
-            int[] a = new int[n];
-            int[] b = new int[m];
-            for(int i = 0;i<n;i++) a[i] = s.nextInt();
-            for(int i = 0;i<m;i++) b[i] = s.nextInt();
-
-            int l1 = 0,l2 = 0,r1 = n-1,r2 = m-1;
-            int mid1 = 0,mid2 = 0;
-            while(l1 <= r1 && l2 <= r2){
-                mid1 = (l1+r1)/2;
-                mid2 = (l2+r2)/2;
-
-            }
-
-        }
-        // end
-        o.close();
-
-    }
+public static int kthSmallest(int[] A, int[] B, int k){
+    if (A == null || B == null || k > A.length + B.length)
+		throw new IllegalArgumentException();
+	return kth(A, 0, A.length, B, 0, B.length, k);
+}
+protected static int kthSmallest(int[] A, int aLow, int aLength, int[] B, int bLow, int bLength, int k){
+	
+	assert(aLow >= 0); assert(bLow >= 0);
+	assert(aLength >= 0); assert (bLength >= 0); assert(aLength + bLength >= k);
+	
+	int i = (int)((double)((k-1)*aLength/(aLength+bLength)));
+	int j = k - 1 - i;
+	
+	int Ai_1 = aLow + i == 0 ? 		MIN : A[aLow + i - 1];
+	int Ai   = aLow + i == A.length ? 	MAX : A[aLow + i];
+	
+	int Bj_1 = bLow + j == 0 ? 		MIN : B[bLow + j - 1];
+	int Bj   = bLow + j == B.length ? 	MAX : B[bLow + j];
+	
+	if (Bj_1 < Ai && Ai < Bj)
+		return Ai;
+	else if (Ai_1 < Bj && Bj < Ai)
+		return Bj;
+	
+	assert(Ai < Bj-1 || Bj < Ai_1);
+	
+	if (Ai < Bj_1) // exclude A[aLow .. i] and A[j..bHigh], k was replaced by k - i - 1
+		return kthSmallest(A, aLow + i + 1, aLength - i - 1, B, bLow, j, k - i - 1);
+	else // exclude A[i, aHigh] and B[bLow .. j], k was replaced by k - j - 1
+		return kthSmallest(A, aLow, i, B, bLow + j + 1, bLength - j - 1, k - j - 1);
 }
