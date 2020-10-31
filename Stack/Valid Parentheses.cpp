@@ -1,39 +1,42 @@
-class Solution {
-public:
-    bool isValid(string s) {
-        stack<int> b;
-        for(int i=0;i<s.size();i++){
-            if(b.empty()&&(s[i]==')'||s[i]=='}'||s[i]==']')){
-                return false;
-            }
-            else if(s[i]=='(')
-                b.push(1);
-            else if(s[i]=='{')
-                b.push(2);
-              else if(s[i]=='[')
-                b.push(3);
-              else if(s[i]==')'){
-                  if(b.top()==1)
-                      b.pop();
-                  else
-                      return false;
-              }
-            else if(s[i]=='}'){
-                  if(b.top()==2)
-                      b.pop();
-                  else
-                      return false;
-              }
-            else if(s[i]==']'){
-                  if(b.top()==3)
-                      b.pop();
-                  else
-                      return false;
-              }
-              
-        }
-        if(!b.empty())return false;
-        else return true;
-        
-    }
-};
+#include<iostream>
+#include<stack>
+#include<string>
+using namespace std;
+// Function to check whether two characters are opening 
+// and closing of same type. 
+bool ArePair(char opening,char closing)
+{
+	if(opening == '(' && closing == ')') return true;
+	else if(opening == '{' && closing == '}') return true;
+	else if(opening == '[' && closing == ']') return true;
+	return false;
+}
+bool AreParanthesesBalanced(string exp)
+{
+	stack<char>  S;
+	for(int i =0;i<exp.length();i++)
+	{
+		if(exp[i] == '(' || exp[i] == '{' || exp[i] == '[')
+			S.push(exp[i]);
+		else if(exp[i] == ')' || exp[i] == '}' || exp[i] == ']')
+		{
+			if(S.empty() || !ArePair(S.top(),exp[i]))
+				return false;
+			else
+				S.pop();
+		}
+	}
+	return S.empty() ? true:false;
+}
+
+int main()
+{
+	/*Code to test the function AreParanthesesBalanced*/
+	string expression;
+	cout<<"Enter an expression:  "; // input expression from STDIN/Console
+	cin>>expression;
+	if(AreParanthesesBalanced(expression))
+		cout<<"Balanced\n";
+	else
+		cout<<"Not Balanced\n";
+}
