@@ -1,5 +1,6 @@
 #include <iostream>
 
+
 void printArray(int *array, int n)
 {
     for (int i = 0; i < n; ++i)
